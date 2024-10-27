@@ -63,7 +63,7 @@ class UserPostService
         $postResponse = $post->update([
             'media_path' => $mediaPath,
             'media_type' => $mediaType,
-            'status' => Post::INPROGRESS
+            'status' => Post::ACTIVE
         ]);
 
         if ($postResponse && !empty($oldPath)) {
@@ -80,7 +80,7 @@ class UserPostService
      *
      * @return bool
      */
-    private function deleteOldVideoFile(string $mediaPath): bool
+    public function deleteOldVideoFile(string $mediaPath): bool
     {
         return Storage::delete($mediaPath);
     }

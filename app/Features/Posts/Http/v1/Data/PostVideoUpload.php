@@ -9,6 +9,7 @@ use Spatie\LaravelData\Data;
 class PostVideoUpload extends Data
 {
     public function __construct(
+        #[MimeTypes('video/mp4', 'video/avi')]
         public UploadedFile $video_file,
     ) {}
 }

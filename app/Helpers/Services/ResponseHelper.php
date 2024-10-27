@@ -26,14 +26,6 @@ class ResponseHelper
     public const UNAUTHORIZED_MESSAGE = "Unauthenticated";
     public const ARGUMENT_COUNT_MESSAGE = "Parameter's are missing";
     public const ALREADY_EXISTS_MESSAGE = "record already exists";
-    public const OUT_OF_STOCK_MESSAGE = "Out Of Stock";
-    public const PRODUCT_MINIMUM_QUANTITY_MESSAGE = "Product minimum quantity";
-    public const PRODUCT_MAXIMUM_QUANTITY_EXCEPTION_MESSAGE = "Product maximum quantity";
-    public const PRODUCT_STATUS_IN_ACTIVE_EXCEPTION_MESSAGE = "Product is in-active";
-    public const CART_EXCEPTION_MESSAGE = "Cart Error";
-    public const INVALID_OTP_EXCEPTION = "Invalid Otp";
-    public const OTP_EXPIRED_EXCEPTION = "Otp IS Expired";
-    public const COUPON_EXCEPTION = "Invalid Coupon";
     public const TOO_MANY_ATTEMPTS = "Too Many Attempts";
 
     /**
@@ -261,72 +253,6 @@ class ResponseHelper
     }
 
     /**
-     * @param mixed $message
-     *
-     * @return JsonResponse
-     */
-    public static function productOutOfStock(mixed $message): JsonResponse
-    {
-        return response()->json([
-            "status" => self::OUT_OF_STOCK_MESSAGE,
-            "message" => $message
-        ], Response::HTTP_LOCKED);
-    }
-
-    /**
-     * @param mixed $message
-     *
-     * @return JsonResponse
-     */
-    public static function productMinimumQuantity(mixed $message): JsonResponse
-    {
-        return response()->json([
-            "status" => self::PRODUCT_MINIMUM_QUANTITY_MESSAGE,
-            "message" => $message
-        ], Response::HTTP_LOCKED);
-    }
-
-    /**
-     * @param mixed $message
-     *
-     * @return JsonResponse
-     */
-    public static function productMaximumQuantity(mixed $message): JsonResponse
-    {
-        return response()->json([
-            "status" => self::PRODUCT_MAXIMUM_QUANTITY_EXCEPTION_MESSAGE,
-            "message" => $message
-        ], Response::HTTP_LOCKED);
-    }
-
-    /**
-     * @param mixed $message
-     *
-     * @return JsonResponse
-     */
-    public static function productInactive(mixed $message): JsonResponse
-    {
-        return response()->json([
-            "status" => self::PRODUCT_STATUS_IN_ACTIVE_EXCEPTION_MESSAGE,
-            "message" => $message
-        ], Response::HTTP_LOCKED);
-    }
-
-    /**
-     * @param mixed $message
-     *
-     * @return JsonResponse
-     */
-    public static function cartError(mixed $message): JsonResponse
-    {
-        return response()->json([
-            "status" => self::CART_EXCEPTION_MESSAGE,
-            "message" => $message
-        ], Response::HTTP_LOCKED);
-    }
-
-
-    /**
      * @param mixed|null $details
      *
      * @return JsonResponse
@@ -339,52 +265,6 @@ class ResponseHelper
             "error" => $details
         ], Response::HTTP_CONFLICT);
     }
-
-
-    /**
-     * @param mixed|null $details
-     *
-     * @return JsonResponse
-     */
-    public static function invalidOtp(mixed $details = null): JsonResponse
-    {
-        return response()->json([
-            "status" => "error",
-            "message" => self::INVALID_OTP_EXCEPTION,
-            "error" => $details
-        ], Response::HTTP_NOT_ACCEPTABLE);
-    }
-
-    /**
-     * @param mixed|null $details
-     *
-     * @return JsonResponse
-     */
-    public static function expiredOtp(mixed $details = null): JsonResponse
-    {
-        return response()->json([
-            "status" => "error",
-            "message" => self::OTP_EXPIRED_EXCEPTION,
-            "error" => $details
-        ], Response::HTTP_NOT_ACCEPTABLE);
-    }
-
-
-    /**
-     * @param mixed|null $details
-     *
-     * @return JsonResponse
-     */
-    public static function couponException(mixed $details = null): JsonResponse
-    {
-        return response()->json([
-            "status" => "error",
-            "message" => self::COUPON_EXCEPTION,
-            "error" => $details
-        ], Response::HTTP_NOT_ACCEPTABLE);
-    }
-
-
 
     /**
      * @param mixed|null $details
@@ -399,16 +279,4 @@ class ResponseHelper
             "error" => $details
         ], Response::HTTP_TOO_MANY_REQUESTS);
     }
-
-
-
-    // public static function returnPaginateResponse(LengthAwarePaginator $collection): JsonResponse
-    // {
-    //     return response()->json([
-    //         "status" => "error",
-    //         "message" => self::TOO_MANY_ATTEMPTS,
-    //         "error" => $details
-    //     ], Response::HTTP_TOO_MANY_REQUESTS);
-    // }
-
 }

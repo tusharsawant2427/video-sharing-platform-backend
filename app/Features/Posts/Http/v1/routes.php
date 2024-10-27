@@ -8,8 +8,9 @@ Route::get('/my-posts', [UserPostController::class, 'index']);
 Route::post('my-posts/create', [UserPostController::class, 'store']);
 Route::get('my-posts/{post:identifier}/edit', [UserPostController::class, 'edit']);
 Route::put('my-posts/{post:identifier}/update', [UserPostController::class, 'update']);
-Route::post('my-posts/{post:identifier}/upload-video', [UserPostController::class, 'uploadVideo']);
+Route::post('my-posts/{post:identifier}/upload-video', [UserPostController::class, 'upload']);
 Route::delete('my-posts/{post:identifier}', [UserPostController::class, 'delete']);
+Route::post('my-posts/delete-chunk-file', [UserPostController::class, 'deleteChunkFile']);
 
 Route::get('/', [PostController::class, 'index']);
 Route::post('{post:identifier}/like', [PostController::class, 'likePost']);
