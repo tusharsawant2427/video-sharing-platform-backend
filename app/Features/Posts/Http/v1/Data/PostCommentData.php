@@ -5,6 +5,7 @@ namespace App\Features\Posts\Http\v1\Data;
 use App\Features\Posts\Domains\Models\PostComment;
 use App\Features\Users\Domains\Models\User;
 use App\Features\Users\Http\v1\Data\UserData;
+use Illuminate\Support\Facades\Auth;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Data;
 
@@ -18,7 +19,15 @@ class PostCommentData extends Data
         public ?int $post_id,
         public ?int $user_id,
         public ?User $user
-    ) {}
+    ) {
+        /**
+         * @var User $user
+         */
+        $user = Auth::guard('api')->user();
+        if (!empty($user)) {
+            $this->user_id = $user->id;
+        }
+    }
 
     /**
      * @param int $postId
