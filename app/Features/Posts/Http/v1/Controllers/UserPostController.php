@@ -11,7 +11,11 @@ use App\Helpers\Services\ResponseHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
+use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
+use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 
 class UserPostController extends Controller
 {
@@ -68,21 +72,64 @@ class UserPostController extends Controller
     }
 
     /**
-     * @param Post $post
-     * @param PostVideoUpload $postVideoUpload
+     * Handles the file upload
+     *
+     * @param Request $request
+     *
+     * @return JsonResponse
+     *
+     * @throws UploadMissingFileException
+     * @throws UploadFailedException
+     */
+    public function upload(Post $post, Request $request)
+    {
+        $receiver = new FileReceiver("file", $request, HandlerFactory::classFromRequest($request));
+
+        if ($receiver->isUploaded() === false) {
+            throw new UploadMissingFileException();
+        }
+
+        $save = $receiver->receive();
+
+        if ($save->isFinished()) {
+            return $this->uploadVideo($save->getFile(), $post, $request);
+        }
+
+        /** @var AbstractHandler $handler */
+        $handler = $save->handler();
+
+        return response()->json([
+            "done" => $handler->getPercentageDone(),
+            'status' => true
+        ]);
+    }
+
+
+    /**
+     * Saves the file
+     *
+     * @param UploadedFile $file
      *
      * @return JsonResponse
      */
-    public function uploadVideo(Post $post, PostVideoUpload $postVideoUpload): JsonResponse
+    protected function uploadVideo(UploadedFile $file, Post $post): JsonResponse
     {
+        $postVideoUpload = new PostVideoUpload(video_file: $file);
         $this->userPostService->uploadPostVideo(post: $post, postVideoUpload: $postVideoUpload);
         return ResponseHelper::updated(details: PostData::from($post));
     }
 
-    public function delete(Post $post)
+    /**
+     * @param Post $post
+     *
+     * @return JsonResponse
+     */
+    public function delete(Post $post): JsonResponse
     {
+        if(!empty($post->media_path)){
+            $this->userPostService->deleteOldVideoFile(mediaPath: $post->media_path);
+        }
         $post->delete();
         return ResponseHelper::success();
     }
-
 }
