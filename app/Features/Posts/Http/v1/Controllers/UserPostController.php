@@ -13,6 +13,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Illuminate\Validation\ValidationException;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
@@ -114,7 +116,15 @@ class UserPostController extends Controller
      */
     protected function uploadVideo(UploadedFile $file, Post $post): JsonResponse
     {
+
         $postVideoUpload = new PostVideoUpload(video_file: $file);
+        $validator = FacadesValidator::make($postVideoUpload->toArray(), [
+            'video_file' => 'required|file|mimetypes:video/*'
+        ]);
+        if ($validator->fails()) {
+            throw ValidationException::withMessages($validator->getMessageBag()->toArray());
+        }
+
         $this->userPostService->uploadPostVideo(post: $post, postVideoUpload: $postVideoUpload);
         return ResponseHelper::updated(details: PostData::from($post));
     }
